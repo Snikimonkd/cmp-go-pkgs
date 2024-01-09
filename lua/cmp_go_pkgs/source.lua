@@ -5,7 +5,7 @@ local items = {}
 local list_pkgs_command = "gopls.list_known_packages"
 
 source.new = function()
-	local self = setmetatable({ cache = {} }, { __index = source })
+	local self = setmetatable({}, { __index = source })
 
 	return self
 end
@@ -79,29 +79,14 @@ source.complete = function(self, _, callback)
 		return
 	end
 
-	local flag = true
 	local bufnr = vim.api.nvim_get_current_buf()
 
 	if next(items) == nil or items[bufnr] == nil then
-		flag = false
-		local clients = vim.lsp.get_active_clients()
-		for _, v in ipairs(clients) do
-			if v.name == "gopls" then
-				flag = true
-				vim.print("retry init_items")
-				init_items(v)
-			end
-		end
-	end
-
-	if flag == true then
-		vim.print("success")
-		callback({ items = items[bufnr], isIncomplete = false })
+		callback()
 		return
 	end
 
-	vim.print("retry failed")
-	callback()
+	callback({ items = items[bufnr], isIncomplete = false })
 end
 
 source.is_available = function()
