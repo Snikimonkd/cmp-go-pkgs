@@ -66,5 +66,8 @@ return {
 (where i stole some code)
 
 https://github.com/ray-x/go.nvim
+
 https://github.com/hrsh7th/cmp-buffer
+
 https://github.com/onsails/lspkind.nvim
+
