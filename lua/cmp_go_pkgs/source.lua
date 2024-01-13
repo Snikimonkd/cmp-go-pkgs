@@ -21,12 +21,8 @@ local init_items = function(a)
 		arguments = arguments,
 	}, function(arg1, arg2, _)
 		if arg2 == nil and arg1 ~= nil then
-			for k, v in pairs(arg2[1]) do
-				if k == "error" then
-					vim.print("LSP error", v.message)
-					return
-				end
-			end
+			vim.print("LSP error", arg1)
+			return
 		end
 
 		if arg1 == nil and arg2 == nil then
