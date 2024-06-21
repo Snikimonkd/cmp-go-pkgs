@@ -4,7 +4,7 @@ nvim-cmp source for golang packages path.
 
 Loads once on LspAttach event.
 
-Shows only incide import block.
+Shows only inside import block.
 
 https://github.com/Snikimonkd/cmp-go-pkgs/assets/72211350/4bf7b149-4f72-4f24-a529-794a9201dcf5
 
