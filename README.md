@@ -25,6 +25,7 @@ return {
             sources = {
                 { name = "go_pkgs" },
             },
+			matching = { disallow_symbol_nonprefix_matching = false }, -- to use . and / in urls
         })
     end,
 },

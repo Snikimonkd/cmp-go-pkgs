@@ -34,7 +34,7 @@ local init_items = function(a)
 
 		for _, v in ipairs(arg2.Packages) do
 			table.insert(tmp, {
-				label = string.format("%s", v),
+				label = string.format('"%s"', v),
 				kind = 9,
 				insertText = string.format('"%s"', v),
 			})
