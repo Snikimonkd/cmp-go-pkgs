@@ -70,7 +70,6 @@ end
 source.complete = function(self, _, callback)
 	local ok = self._check_if_inside_imports()
 	if ok == false then
-		vim.print("not inside imports")
 		callback()
 		return
 	end
