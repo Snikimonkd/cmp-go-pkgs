@@ -21,12 +21,12 @@ local init_items = function(a)
 		arguments = arguments,
 	}, function(arg1, arg2, _)
 		if arg2 == nil and arg1 ~= nil then
-			vim.print("LSP error", arg1)
+			vim.notify(("LSP error: %s"):format(vim.inspect(arg1)), vim.log.levels.DEBUG)
 			return
 		end
 
 		if arg1 == nil and arg2 == nil then
-			vim.print("both arg1 and arg2 are nil")
+			vim.notify("both arg1 and arg2 are nil", vim.log.levels.DEBUG)
 			return
 		end
 
@@ -70,7 +70,7 @@ end
 source.complete = function(self, _, callback)
 	local ok = self._check_if_inside_imports()
 	if ok == false then
-		vim.print("not inside imports")
+		vim.notify("not inside imports", vim.log.levels.DEBUG)
 		callback()
 		return
 	end
