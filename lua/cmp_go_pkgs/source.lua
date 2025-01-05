@@ -14,7 +14,7 @@ local init_items = function(a)
 	local client = vim.lsp.get_client_by_id(a.data.client_id)
 	local bufnr = vim.api.nvim_get_current_buf()
 	local uri = vim.uri_from_bufnr(bufnr)
-	local arguments = { { URI = uri } }
+	local arguments = { { uri = uri } }
 
 	client.request("workspace/executeCommand", {
 		command = list_pkgs_command,
