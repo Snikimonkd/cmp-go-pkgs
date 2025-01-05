@@ -5,88 +5,88 @@ local items = {}
 local list_pkgs_command = "gopls.list_known_packages"
 
 source.new = function()
-	local self = setmetatable({}, { __index = source })
+  local self = setmetatable({}, { __index = source })
 
-	return self
+  return self
 end
 
 local init_items = function(a)
-	local client = vim.lsp.get_client_by_id(a.data.client_id)
-	local bufnr = vim.api.nvim_get_current_buf()
-	local uri = vim.uri_from_bufnr(bufnr)
-	local arguments = { { URI = uri } }
+  local client = vim.lsp.get_client_by_id(a.data.client_id)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local uri = vim.uri_from_bufnr(bufnr)
+  local arguments = { { uri = uri } }
 
-	client.request("workspace/executeCommand", {
-		command = list_pkgs_command,
-		arguments = arguments,
-	}, function(arg1, arg2, _)
-		if arg2 == nil and arg1 ~= nil then
-			vim.print("LSP error", arg1)
-			return
-		end
+  client.request("workspace/executeCommand", {
+    command = list_pkgs_command,
+    arguments = arguments,
+  }, function(arg1, arg2, _)
+    if arg2 == nil and arg1 ~= nil then
+      vim.print("LSP error", arg1)
+      return
+    end
 
-		if arg1 == nil and arg2 == nil then
-			vim.print("both arg1 and arg2 are nil")
-			return
-		end
+    if arg1 == nil and arg2 == nil then
+      vim.print("both arg1 and arg2 are nil")
+      return
+    end
 
-		local tmp = {}
+    local tmp = {}
 
-		for _, v in ipairs(arg2.Packages) do
-			table.insert(tmp, {
-				label = string.format('"%s"', v),
-				kind = 9,
-				insertText = string.format('"%s"', v),
-			})
-		end
+    for _, v in ipairs(arg2.Packages) do
+      table.insert(tmp, {
+        label = string.format('"%s"', v),
+        kind = 9,
+        insertText = string.format('"%s"', v),
+      })
+    end
 
-		items[bufnr] = tmp
-	end, bufnr)
+    items[bufnr] = tmp
+  end, bufnr)
 end
 
 vim.api.nvim_create_autocmd({ "LspAttach" }, {
-	pattern = { "*.go" },
-	callback = init_items,
+  pattern = { "*.go" },
+  callback = init_items,
 })
 
 source._check_if_inside_imports = function()
-	local cur_node = require("nvim-treesitter.ts_utils").get_node_at_cursor()
+  local cur_node = require("nvim-treesitter.ts_utils").get_node_at_cursor()
 
-	local func = cur_node
-	local flag = false
+  local func = cur_node
+  local flag = false
 
-	while func do
-		if func:type() == "import_declaration" then
-			flag = true
-			break
-		end
+  while func do
+    if func:type() == "import_declaration" then
+      flag = true
+      break
+    end
 
-		func = func:parent()
-	end
+    func = func:parent()
+  end
 
-	return flag
+  return flag
 end
 
 source.complete = function(self, _, callback)
-	local ok = self._check_if_inside_imports()
-	if ok == false then
-		vim.print("not inside imports")
-		callback()
-		return
-	end
+  local ok = self._check_if_inside_imports()
+  if ok == false then
+    vim.print("not inside imports")
+    callback()
+    return
+  end
 
-	local bufnr = vim.api.nvim_get_current_buf()
+  local bufnr = vim.api.nvim_get_current_buf()
 
-	if next(items) == nil or items[bufnr] == nil then
-		callback()
-		return
-	end
+  if next(items) == nil or items[bufnr] == nil then
+    callback()
+    return
+  end
 
-	callback({ items = items[bufnr], isIncomplete = false })
+  callback({ items = items[bufnr], isIncomplete = false })
 end
 
 source.is_available = function()
-	return vim.bo.filetype == "go"
+  return vim.bo.filetype == "go"
 end
 
 return source
